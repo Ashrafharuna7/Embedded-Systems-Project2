@@ -45,14 +45,16 @@ The project demonstrates real-time speed control and feedback, useful for embedd
 
 
 ## Circuit Diagram
-The fan is powered using a 12V DC power supply and has its tachometer and PWM connected to PA9 and PA8 respectively. The microcontroller is connected via USB to the laptop. The 5-pin Rotary Encoder is connected as follows: 
+The fan is powered using a 12V DC power supply and has its tachometer and PWM connected to PA9 and PA8 respectively. The microcontroller is connected via USB to the laptop. 
+The 5-pin Rotary Encoder is connected as follows: 
 - CLK pin to PA0
 - DT pin to PB3
 - SW pin to PB4
 - Positive pin to 3.3V
 - Negative pin to GND.
-This allows the microcontroller to read the input voltage from the potentiometer as a digital value. There is a pullup resistor connected to the tachometer and 3.3V to pull the signal **HIGH** when the fan is not pulling it **LOW**. The microcontroller uses UART serial communication to communicate to the laptop. This is done on both PA2 and PA15. The circuit digram can be seen below: 
-![Circuit Diagram](Circuit_Diagram.png)
+ There is a 10kΩ pullup resistor connected to the tachometer and 3.3V to pull the signal **HIGH** when the fan is not pulling it **LOW**. The microcontroller uses UART serial communication to communicate to the laptop. This is done using PA2 to transmit UART to the serial monitor. The circuit digram can be seen below: 
+![image](https://github.com/user-attachments/assets/443c0f6c-d24c-4752-b22b-d7d1d494fb73)
+
 
 The STM32l432KC Microcontroller:
 ![nucleo_l432kc_2017_10_09](https://github.com/user-attachments/assets/a64d2cd8-6861-476b-8015-f13cac2e5bf3)
