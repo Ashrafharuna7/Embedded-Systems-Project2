@@ -52,6 +52,7 @@ The 5-pin Rotary Encoder is connected as follows:
 - SW pin to PB4
 - Positive pin to 3.3V
 - Negative pin to GND.
+
 There is a 10kΩ pullup resistor connected to the tachometer and 3.3V to pull the signal **HIGH** when the fan is not pulling it **LOW**. The microcontroller uses UART serial communication to communicate to the laptop. This is done using PA2 to transmit UART to the serial monitor. The circuit digram can be seen below: 
 ![image](https://github.com/user-attachments/assets/443c0f6c-d24c-4752-b22b-d7d1d494fb73)
 
