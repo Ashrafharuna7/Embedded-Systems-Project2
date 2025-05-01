@@ -1,16 +1,4 @@
-# STM32 Fan Speed Controller
-# Table of Contents
-[Introduction](https://github.com/Ashrafharuna7/Embedded-Systems#introduction)
-
-[List of Components used](https://github.com/Ashrafharuna7/Embedded-Systems/blob/main/README.md#list-of-components-used)
-
-[Features](https://github.com/Ashrafharuna7/Embedded-Systems/blob/main/README.md#features)
-
-[Circuit Diagram](https://github.com/Ashrafharuna7/Embedded-Systems/blob/main/README.md#circuit-diagram)
-
-[Calculating the RPM](https://github.com/Ashrafharuna7/Embedded-Systems/blob/main/README.md#calculating-the-rpm)
-
-[Troubleshooting Common issues and during the project](https://github.com/Ashrafharuna7/Embedded-Systems/blob/main/README.md#troubleshooting-common-issues-and-during-the-project)
+# STM32 Fan Speed Control using a Rotary Encoder
 
 
 
@@ -41,7 +29,12 @@ The project demonstrates real-time speed control and feedback, useful for embedd
 - Timer 2 CH2 is used on **PB3** as **Encoder Mode** for the Rotary Encoder's **DT** pin.
 - GPIO Input is used on **PB4** for the switch on the Rotary Encoder to toggle a low power mode.
 - USART2_TX is used on **PA2** to transmit UART to the serial monitor.
-- Below is Table 15 showing the alternative functions of the used pins.![image](https://github.com/user-attachments/assets/b8c79627-e1b0-47e1-b94c-a00ef012f18b)
+- Below is Table 15 showing the alternative functions of the used pins.
+![image](https://github.com/user-attachments/assets/cbf11e7d-d9d2-445a-a652-ce790eecefd7)
+![image](https://github.com/user-attachments/assets/300efeb3-e7df-4fd3-9096-f3cb0374b08c)
+
+
+
 
 
 ## Circuit Diagram
@@ -57,16 +50,27 @@ There is a 10kΩ pullup resistor connected to the tachometer and 3.3V to pull th
 ![image](https://github.com/user-attachments/assets/443c0f6c-d24c-4752-b22b-d7d1d494fb73)
 
 
-The STM32l432KC Microcontroller:
-![nucleo_l432kc_2017_10_09](https://github.com/user-attachments/assets/a64d2cd8-6861-476b-8015-f13cac2e5bf3)
+The STM32l432KC Microcontroller with used Pins:
+![nucleo_l432kc_2017_10_09 (1)](https://github.com/user-attachments/assets/078e9f90-ffc1-4efe-aba1-01d981389d41)
 
+## Encoder Mode
+One of the operation modes for the timers on the STM32 is **encoder mode**. The purpose of this mode is to increment or decrement the timer counter when a transitiion occurs on the rotary encoder. The increment or decrement depends on the clockwise or counter-clockwise movement of the encoder.
+
+
+## How the Rotary Encoder Works
+Inside a rotary encoder, there's a circular disc with evenly spaced out disc with evenly spaced slots. This disc is attached to the turnknob. The disc connects to a pin called "C" which serves as the common ground. The encoder also has two other important pins, A and B, which help determine what direction the knob is turning.
+
+Because of the way the slots are arranged, pins A and B do not touch the common ground at the same time. One always touches just before the other. This creates two separate signals that are 90 degrees out of phase. 
+
+So how do we figure out which way the knob is turning? This is done by watching the state of pin B at the exact moment pin A changes its state.
+If pin B's state is **different** from pin A when pin A changes state, then we know the knob is being turned clockwise.![image](https://github.com/user-attachments/assets/b130e347-4b95-4a86-a876-065a60ef6dc4)
+
+If pin B's state is **the same** from pin A when pin A changes state, then we know the knob is being turned counter-clockwise.![image](https://github.com/user-attachments/assets/3bfa9c64-b070-4d49-aba6-88864c46d988)
+
+This method of tracking is called **Quadrature Encoding**
 
 ## Calculating the RPM
-To measure the fan speed, the tachometer signal from the fan was used. When a fan blade completes one full rotation, the tachometer signal transitions from **HIGH to LOW** and **LOW to HIGH**. The fan is an example of a rotary encoder and the time between the pulses tells us the speed. When the fan completes a full rotation it outputs a pulse. The time difference between to consecutive rising or falling edges is used to calculate the rpm. The RPM calculation is as follows: 
-- Period = (1000*duration/Clockspeed),period in milliseconds
-- rpm = 60000/period
-
-This is done in the captureFanSpeed funtion in the code:![image](https://github.com/user-attachments/assets/25cbcb28-302f-4431-bf65-68e8bc769aca)
+To determine the speed of the fan, we used the STM32's Timer 1 in input capture mode. The fan provides a tachometer signal from one of its pins. The fan generates two pulses when it completes one full rotation. By measuring the frequency of this signal, the fan speedd can be calculated.
 
 
 ## Troubleshooting Common issues and during the project
@@ -94,7 +98,7 @@ However, challenges arose along the way.
 There were issues with measuring the RPM accurately. 
 The fan's tachometer signal required a proper pull-up resistor, which was overlooked, leading to inconsistent readings.
 
-Having tackled these challenges, the objective of the project was successful as it demonstrated PMW-based speed contrl and RPM measurement using an STM32 microcontroller.
+Having tackled these challenges, the objective of the project was successful as it demonstrated PMW-based speed control and RPM measurement using an STM32 microcontroller.
 Valuable lessons from debugging signal issues and correctly configuring timers and channels were learned and will be used in future embedded systems projects.
 
 
