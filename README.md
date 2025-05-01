@@ -110,6 +110,47 @@ It was a good idea to check the PWM signal and tachometer signal using an oscill
 
 *Figure 6: Tachometer signal after adding a pull-up resistor*
 
+## Ethical Considerations for Embedded Systems
+Embedded Systems are specialised computing units within larger systems, often used in critical applications like automotive, medical, and industrial control. 
+The STM32L432KC microcontroller, being a power-efficient ARM Cortex-M4, is widely used in Iot and security-sensitive applications.
+As the use of embedded systems expands, several ethical considerations must be addressed.
+
+### Security and Risk Mitigation
+There is a threat of cyber attacks on embedded systems, which are now central to everything from appliances to vehicles.
+Ethically, engineers must prioritse security to prevent harm from potential breaches, whether it's user data theft, system failures, or even life-threatening outcomes in critical systems like automotive or medical devices.
+There are three main security princples: Confidntiality, Integrity, and Availability (CIA).
+
+**Confidentiality** - Ensuring that sensitive data is accessible only to authorised parties.
+
+**Integrity** - Preventing unauthorised modification of code or data.
+
+**Availability** - Ensuring system uptime and resistance against denial-of-service attacks.
+
+### Compliance with Legal and Regulatory Standards
+Embedded systems must comply with legal requirements.
+Ethically, engineers must design systems that comply with regulations ensuring respect for user rights and public safety.
+
+Compliance standards include:
+
+**ISO 26262**: Automotive functional safety standard
+
+**IEC 62433**: Security standard for industrial automation and control system
+
+**GDPR**: Data protection regulation application to IOT devices.
+
+**NIST Guidelines**: Best practices for cybersecurity in embedded systems.
+
+
+### Firmware Management and Safety
+Effective firmware management is not just a technical neccisty but also a ethical obligation. 
+Outdated or insecure firmware can expose devices to vulnerabilites.
+*"A catastrophe should not be the catalyst for action".*
+Manufacturers and developers must ensure regular updates and safe deployment practices to protect users and infrastructure.
+This also reinforces the ethical principle of proactive responsibilty.
+As engineers, it is important to anticipate risks and act before failures occur, rather than reacting only after the damage is done.
+
+
+
 
 ## Conclusion
 This project successfully demonstrated how to use the STM32L432KC microcontroller to control andd monitor the speed of a DC fan. 
