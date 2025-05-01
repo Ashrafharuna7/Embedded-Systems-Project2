@@ -33,6 +33,8 @@ The project demonstrates real-time speed control and feedback, useful for embedd
 ![image](https://github.com/user-attachments/assets/cbf11e7d-d9d2-445a-a652-ce790eecefd7)
 ![image](https://github.com/user-attachments/assets/300efeb3-e7df-4fd3-9096-f3cb0374b08c)
 
+*Figure 1: Table showing alternative functions of the pins used*
+
 
 
 ## Circuit Diagram
@@ -47,12 +49,7 @@ The 5-pin Rotary Encoder is connected as follows:
 There is a 10kΩ pullup resistor connected to the tachometer and 3.3V to pull the signal **HIGH** when the fan is not pulling it **LOW**. The microcontroller uses UART serial communication to communicate to the laptop. This is done using PA2 to transmit UART to the serial monitor. The circuit digram can be seen below: 
 ![image](https://github.com/user-attachments/assets/72ad520d-3ad8-4812-a951-ea096a05ce32)
 
-
-
-
-
-The STM32l432KC Microcontroller with used Pins:
-![nucleo_l432kc_2017_10_09 (1)](https://github.com/user-attachments/assets/078e9f90-ffc1-4efe-aba1-01d981389d41)
+*Figure 2: Circuit Diagram of Project*
 
 ## Encoder Mode
 One of the operation modes for the timers on the STM32 is **encoder mode**. The purpose of this mode is to increment or decrement the timer counter when a transitiion occurs on the rotary encoder. The increment or decrement depends on the clockwise or counter-clockwise movement of the encoder.
@@ -66,13 +63,35 @@ Because of the way the slots are arranged, pins A and B do not touch the common 
 So how do we figure out which way the knob is turning? This is done by watching the state of pin B at the exact moment pin A changes its state.
 If pin B's state is **different** from pin A when pin A changes state, then we know the knob is being turned clockwise.![image](https://github.com/user-attachments/assets/b130e347-4b95-4a86-a876-065a60ef6dc4)
 
+*Figure 3: States of Pin A and Pin B showing the knob being turned clockwise*
+
 If pin B's state is **the same** from pin A when pin A changes state, then we know the knob is being turned counter-clockwise.![image](https://github.com/user-attachments/assets/3bfa9c64-b070-4d49-aba6-88864c46d988)
+
+*Figure 4: States of Pin a and Pin B showing the knob being turnedd counter-clockwise*
 
 This method of tracking is called **Quadrature Encoding**
 
 ## Calculating the RPM
 To determine the speed of the fan, we used the STM32's Timer 1 in input capture mode. The fan provides a tachometer signal from one of its pins. The fan generates two pulses when it completes one full rotation. By measuring the frequency of this signal, the fan speed can be calculated.
+```c
+int captureFanSpeed()
+    {
+        // Calculate fan speed based on captured pulse time from FG signal (PA9)
+        if (TIM1->SR & TIM_SR_CC2IF)  // Check if capture event occurred (CC1IF flag)
+        {
+            currentSpeed = TIM1->CCR2; // directly from tach
+            duration = currentSpeed - oldSpeed; //period
+            
 
+            
+            period = 1000*duration/SystemCoreClock;
+            rpm = (60000000) / (duration * 2); // 2 pulses per rev, timer at 1MHz
+            oldSpeed = currentSpeed;
+```
+
+## Low-power Mode
+To utilise the rotary encoder even further, a low-power mode is triggered when the SW button is pressed. This sets the fan to 20% PWM duty cycle for a period of time.
+This reduces power consumption while keeping the fan operational at a lower speed. Low power modes are essential in embedded systems for energy efficiency, system longevity, and cost efficiency.
 
 ## Lessons Learned
 - Always verify peripheral pin mappings with the reference manual and datasheet before writing code.
@@ -83,13 +102,13 @@ To determine the speed of the fan, we used the STM32's Timer 1 in input capture 
 **Debugging the PWM signal and tachometer signal using an oscilloscope**\
 It was a good idea to check the PWM signal and tachometer signal using an oscilloscope to verify if changing the duty cycle changed the speed of the fan. This also confirmed that the tachometer signal needed a pullup resistor as the initial signal was unstable.
 
-Before pullup resistor was added:
-
 ![image](https://github.com/user-attachments/assets/6c420289-266d-40ec-afa2-69b1cd4b2342)
 
-After pullup resistor was addded:
+*Figure 5: Tachometer signal before adding a pull-up resistor*
 
 ![image](https://github.com/user-attachments/assets/39c0787c-6aa0-4504-baae-0ca294c53269)
+
+*Figure 6: Tachometer signal after adding a pull-up resistor*
 
 
 ## Conclusion
@@ -103,7 +122,14 @@ A major learning outcome involved correctly setting up timer channels and config
 Additionally, using an oscilloscope to debug PWM and tachometer signals helped identify the need for a pull-up resistor, which stabalised the tachometer output.
 Despite challenges such as unexpected RPM readings and timer conflicts, reviewing the datasheet and reference manual allowed for resolution. 
 These experiences provided hands-on understanding of embedded peripherals such as timers, PWM generation, serial communication, and signal conditioning.
-The project serves as a practical example of integrating multiple peripherals in embedded systems and highlights the importance of debugging, hardware awareness and good desing practiceas.
+The project serves as a practical example of integrating multiple peripherals in embedded systems and highlights the importance of debugging, hardware awareness and good desing practices.
+
+# References
+https://www.st.com/resource/en/datasheet/stm32l432kc.pdf - STM32L432KC Datasheet
+
+https://www.st.com/resource/en/reference_manual/rm0432-stm32l4-series-advanced-armbased-32bit-mcus-stmicroelectronics.pdf - STM32L432KC Reference Manual
+
+https://lastminuteengineers.com/rotary-encoder-arduino-tutorial/ - Rotary Encoder
 
 
 
