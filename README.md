@@ -51,6 +51,21 @@ There is a 10kΩ pullup resistor connected to the tachometer and 3.3V to pull th
 
 *Figure 2: Circuit Diagram of Project*
 
+## Timers
+Timers are hardware peripherals used for precise time measurement and control. They act as counters that increment or decrement at a fixed rate, based on the microcontroller's clock. 
+This allows for tasks like generating periodic signals like PWM for the fan and measuring time intervals which is important for calculating the rpm.
+Timers played a crucial role in enabling precise and real-time control of the fan's behaviour.
+
+### Timer 1 Channel 1 (PWM Generation)
+This timer and channel was used to generate a PWM signal on PA8 to control the speed of the fan.
+By adjusting the duty cycle of this signal, the average voltage supplied to the fan is varied, which directly influences its rotational speed.
+
+### Timer 1 Channel 2 (Input Capture) 
+This channel was configured on PA9 in input capture mode to record the time between consecutive rising edges of the fan's tachometer signal. This time difference is used to calculate the fan's RPM. 
+
+### Timer 2 (Encoder Mode)
+This timer was configured PA0 and PB3 in encoder mode to count the changes in the rotary encoder's output. The counter increases and decreases depending on the direction of rotation, allowing smooth, incremental control of the PWM duty cycle.
+
 ## Encoder Mode
 One of the operation modes for the timers on the STM32 is **encoder mode**. The purpose of this mode is to increment or decrement the timer counter when a transitiion occurs on the rotary encoder. The increment or decrement depends on the clockwise or counter-clockwise movement of the encoder.
 
