@@ -35,8 +35,6 @@ The project demonstrates real-time speed control and feedback, useful for embedd
 
 
 
-
-
 ## Circuit Diagram
 The fan is powered using a 12V DC power supply and has its tachometer and PWM connected to PA9 and PA8 respectively. The microcontroller is connected via USB to the laptop. 
 The 5-pin Rotary Encoder is connected as follows: 
@@ -47,7 +45,10 @@ The 5-pin Rotary Encoder is connected as follows:
 - Negative pin to GND.
 
 There is a 10kΩ pullup resistor connected to the tachometer and 3.3V to pull the signal **HIGH** when the fan is not pulling it **LOW**. The microcontroller uses UART serial communication to communicate to the laptop. This is done using PA2 to transmit UART to the serial monitor. The circuit digram can be seen below: 
-![image](https://github.com/user-attachments/assets/443c0f6c-d24c-4752-b22b-d7d1d494fb73)
+![image](https://github.com/user-attachments/assets/72ad520d-3ad8-4812-a951-ea096a05ce32)
+
+
+
 
 
 The STM32l432KC Microcontroller with used Pins:
@@ -70,37 +71,39 @@ If pin B's state is **the same** from pin A when pin A changes state, then we kn
 This method of tracking is called **Quadrature Encoding**
 
 ## Calculating the RPM
-To determine the speed of the fan, we used the STM32's Timer 1 in input capture mode. The fan provides a tachometer signal from one of its pins. The fan generates two pulses when it completes one full rotation. By measuring the frequency of this signal, the fan speedd can be calculated.
+To determine the speed of the fan, we used the STM32's Timer 1 in input capture mode. The fan provides a tachometer signal from one of its pins. The fan generates two pulses when it completes one full rotation. By measuring the frequency of this signal, the fan speed can be calculated.
 
 
-## Troubleshooting Common issues and during the project
-### No RPM Reading
-**Ensure that the tachometer has a pull-up resistor (around 4.7kΩ or more) connecting to 3.3V.**\
-While tryng to measure the rpm output, it seemed like some of the readings from the tachometer signal was random. This could be due to not having a sufficient pull-up resistor. The pullup resistor used was only a value of 330Ω which is normally too low. Adding a higher resistor may have stabalised the readings.
-  
-**Ensure that PA1 is correctly configured as an input capture pin.**\
-I had issues when trying to read the tachometer signal as PA1 was not configured as an alternative function for timer2. It is important to make sure that PA1 is configured as an alternative function for timer2 input capture on the correct channel (Channel 2). Going through the datasheets and reference manuals of devices proves to be a big help when setting up configurations.
+## Lessons Learned
+- Always verify peripheral pin mappings with the reference manual and datasheet before writing code.
+- Use an oscilloscope when debugging analog or fast-changing digital signals to validate software assumptions.
+- Pull-up resistors are essential for open-drain signals like the tachometer
+- Input capture modes and encoder modes can be combined effectively with PWM to create interactive control systems.
 
-### PWM not controlling the fan
-**Verify the potentiometer connections**\
-A big issue that I faced during this project was the wiring of the potentiometer. I connected the potentiometer to the 12V power supply which damaged my board and required a replacement. It is important to draw a schematic before starting to connect anything to prevent such mistakes.
+**Debugging the PWM signal and tachometer signal using an oscilloscope**\
+It was a good idea to check the PWM signal and tachometer signal using an oscilloscope to verify if changing the duty cycle changed the speed of the fan. This also confirmed that the tachometer signal needed a pullup resistor as the initial signal was unstable.
 
-**Check PWM signal using an oscilloscope**\
-It was a good idea to check the PWM signal using an oscilloscope to verify if changing the duty cycle changed the speed of the fan.![image](https://github.com/user-attachments/assets/9111bbb5-8c86-491b-bdc1-5145b6e53bfe)
+Before pullup resistor was added:
+
+![image](https://github.com/user-attachments/assets/6c420289-266d-40ec-afa2-69b1cd4b2342)
+
+After pullup resistor was addded:
+
+![image](https://github.com/user-attachments/assets/39c0787c-6aa0-4504-baae-0ca294c53269)
 
 
 ## Conclusion
-Overall, the project was successful, and the majority of the implementation worked as expected.
-The PMW control of the fan was achieved using Timer 2, and the speed adjustment using the potentiometer was accurately reflected in the PMW duty cycle on the oscilloscope.
-The RPM measurement using input capture on PA1 also functioned, allowing for real-time monitoring of the fan's speed.
+This project successfully demonstrated how to use the STM32L432KC microcontroller to control andd monitor the speed of a DC fan. 
+Using PWM generation, rotary encoder input, and input capture modes, we were able to implement real-time speed control with feedback.
+The rotary encoder offered a user-friendly interface to adjust fan speed precisely. 
+The tachometer signal from the fan was captured using Timer 1 in input capture mode to calculate RPM values based on pulse timing.
+The encoder's push button was also utilised to toggle a low-power mode for energy efficiency.
 
-However, challenges arose along the way.
-There were issues with measuring the RPM accurately. 
-The fan's tachometer signal required a proper pull-up resistor, which was overlooked, leading to inconsistent readings.
-
-Having tackled these challenges, the objective of the project was successful as it demonstrated PMW-based speed control and RPM measurement using an STM32 microcontroller.
-Valuable lessons from debugging signal issues and correctly configuring timers and channels were learned and will be used in future embedded systems projects.
-
+A major learning outcome involved correctly setting up timer channels and configuring GPIO pins for alternate functions.
+Additionally, using an oscilloscope to debug PWM and tachometer signals helped identify the need for a pull-up resistor, which stabalised the tachometer output.
+Despite challenges such as unexpected RPM readings and timer conflicts, reviewing the datasheet and reference manual allowed for resolution. 
+These experiences provided hands-on understanding of embedded peripherals such as timers, PWM generation, serial communication, and signal conditioning.
+The project serves as a practical example of integrating multiple peripherals in embedded systems and highlights the importance of debugging, hardware awareness and good desing practiceas.
 
 
 
